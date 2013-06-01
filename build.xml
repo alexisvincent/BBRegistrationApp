@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See commented blocks below for -->
+<!-- some examples of how to customize the build. -->
+<!-- (If you delete it and reopen the project it will be recreated.) -->
+<!-- By default, only the Clean and Build commands use this build script. -->
+<!-- Commands such as Run, Debug, and Test only use this build script if -->
+<!-- the Compile on Save feature is turned off for the project. -->
+<!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
+<!-- in the project's Project Properties dialog box.-->
+<project name="BBRegistratonApp" default="default" basedir=".">
+    
+    <description>Builds, tests, and runs the project RegistratonApp.</description>
+    <import file="nbproject/build-impl.xml"/>
+    
+    <!--
+
+    There exist several targets which are by default empty and which can be 
+    used for execution of your tasks. These targets are usually executed 
+    before and after some main targets. They are: 
+
+      -pre-init:                 called before initialization of project properties
+      -post-init:                called after initialization of project properties
+      -pre-compile:              called before javac compilation
+      -post-compile:             called after javac compilation
+      -pre-compile-single:       called before javac compilation of single file
+      -post-compile-single:      called after javac compilation of single file
+      -pre-compile-test:         called before javac compilation of JUnit tests
+      -post-compile-test:        called after javac compilation of JUnit tests
+      -pre-compile-test-single:  called before javac compilation of single JUnit test
+      -post-compile-test-single: called after javac compilation of single JUunit test
+      -pre-jar:                  called before JAR building
+      -post-jar:                 called after JAR building
+      -post-clean:               called after cleaning build products
+
+    (Targets beginning with '-' are not intended to be called on their own.)
+
+    Example of inserting an obfuscator after compilation could look like this:
+
+        <target name="-post-compile">
+            <obfuscate>
+                <fileset dir="${build.classes.dir}"/>
+            </obfuscate>
+        </target>
+
+    For list of available properties check the imported 
+    nbproject/build-impl.xml file. 
+
+
+    Another way to customize the build is by overriding existing main targets.
+    The targets of interest are: 
+
+      -init-macrodef-javac:     defines macro for javac compilation
+      -init-macrodef-junit:     defines macro for junit execution
+      -init-macrodef-debug:     defines macro for class debugging
+      -init-macrodef-java:      defines macro for class execution
+      -do-jar-with-manifest:    JAR building (if you are using a manifest)
+      -do-jar-without-manifest: JAR building (if you are not using a manifest)
+      run:                      execution of project 
+      -javadoc-build:           Javadoc generation
+      test-report:              JUnit report generation
+
+    An example of overriding the target for project execution could look like this:
+
+        <target name="run" depends="BlueBallotRegistratonApp-impl.jar">
+            <exec dir="bin" executable="launcher.exe">
+                <arg file="${dist.jar}"/>
+            </exec>
+        </target>
+
+    Notice that the overridden target depends on the jar target and not only on 
+    the compile target as the regular run target does. Again, for a list of available 
+    properties which you can use, check the target you are overriding in the
+    nbproject/build-impl.xml file. 
+
+    -->
+    
+    
+    <!-- This target makes a single distributable JAR :) -->
+    <target name="lovelyJAR">
+        <!-- OK, so to bundle your app in a single JAR we do the following. First we're
+             going to set some properties. Edit these so that they fit your situation/environment
+        -->
+        
+        <!-- The name of your final JAR, minus the .jar extension. It should not have spaces. 
+             <property name="store.jar.name" value="MyJarName"/> 
+        -->
+        <property name="destination.jar.name" value="RegistrationApp"/>
+        
+        <!-- The directory that will contain the finished product. Minus the / character.
+             <property name="store.dir" value="releaseDirectory"/> 
+        -->
+        <property name="destination.dir" value="distributables"/>
+        
+        <!-- Your Main class.
+             <property name="application.main-class" value="package.Class"/> 
+        -->
+        <property name="application.main-class" value="main.Main"/>
+        
+        
+        <!-- don't edit below this line!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+             Unless you know what you're doing ofcourse ;) 
+        -->
+        <property name="destination.jar" value="${destination.dir}/${destination.jar.name}.jar"/>
+        
+        <echo message="Packaging your JARS into a single JAR at ${destination.jar}"/>
+        
+        <delete dir="${destination.dir}"/>
+        <mkdir dir="${destination.dir}"/>
+        
+        <jar destfile="${destination.dir}/temp_final.jar" filesetmanifest="skip">
+            <!-- Packages the following jars -->
+            <zipgroupfileset dir="dist" includes="*.jar"/>
+            <zipgroupfileset dir="dist/lib" includes="*.jar"/>
+            <manifest>
+                <attribute name="Main-Class" value="${application.main-class}"/>
+            </manifest>
+        </jar>
+        
+        <zip destfile="${destination.jar}">
+            <zipfileset src="${destination.dir}/temp_final.jar"
+                        excludes="META-INF/*.SF, META-INF/*.DSA, META-INF/*.RSA"/>
+        </zip>
+        
+        <delete file="${destination.dir}/temp_final.jar"/>
+    </target>
+    
+    
+    
+    
+    <!-- This target bundles our lovelyJar into a distributable .app for mac :)
+         Depends on appbundler-1.0.jar found here
+         https://java.net/projects/appbundler
+         By default this script looks in your apps root directory under bundlers
+    -->
+    <target name="mac" depends="lovelyJAR">
+        <!-- Set the following variables according to your situation/environment -->
+        
+        <!-- The name of your final App. It should not have spaces. 
+             <property name="myApp.name" value="AppName"/>
+        -->
+        <property name="myApp.name" value="RegistrationApp"/>
+        
+        <!-- The display (mouseover) name  of your final App.
+             <property name="myApp.display-name" value="App Name"/>
+        -->
+        <property name="myApp.display-name" value="Registration App"/>
+        
+        <!-- The directory that will contain the distributable app. Minus the / character.
+             <property name="destination.dir" value="releaseDirectory"/> 
+        -->
+        <property name="destination.dir" value="distributables"/>
+        
+        <!-- The icon this app will use.
+             <property name="myApp.icon" value="path/to/icon.icns"/> 
+        -->
+        <property name="myApp.icon" value="bundlers/icon.icns"/>
+        
+        <!-- The JAR you are bundling into the app.
+             <property name="myApp.jar" value="path/to/lovelyJAR.jar"/> 
+        -->
+        <property name="myApp.jar" value="distributables/RegistrationApp.jar"/>
+        
+        <!-- Your Main class.
+             <property name="myApp.main-class" value="package.Class"/> 
+        -->
+        <property name="myApp.main-class" value="main.Main"/>
+        
+        <!-- The location of your JRE (inorder to bundle it with your app).
+             <property name="myApp.jre" value="/Library/Java/JavaVirtualMachines/jdk1.7.0_12.jdk/Contents/Home"/>
+        -->
+        <property name="myApp.jre" value="/Library/Java/JavaVirtualMachines/jdk1.7.0_12.jdk/Contents/Home"/>
+        
+        <!-- The location of appbundler-1.0.jar & jarbundler-2.2.0.jar 
+             <property name="myBundlers.dir" value="bundlers"/>
+        -->
+        <property name="myBundlers.dir" value="bundlers"/>
+        
+        <!-- don't edit below this line!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+             Unless you know what you're doing ofcourse ;) 
+        -->
+        <property environment="env"/>
+        <taskdef name="bundleapp"
+                 classname="com.oracle.appbundler.AppBundlerTask"
+                 classpath="${myBundlers.dir}/appbundler-1.0.jar" />
+        
+        <bundleapp outputdirectory="${destination.dir}"
+                   name="${myApp.name}"
+                   displayname="${myApp.display-name}"
+                   identifier="${myApp.name}"
+                   icon="${myApp.icon}"
+                   mainclassname="${myApp.main-class}">
+            <runtime dir="${myApp.jre}" />
+            <classpath file="${myApp.jar}"/>
+        </bundleapp>
+    </target>
+    
+    
+    <target name="windows" depends="lovelyJAR">
+        <property name="launch4j.dir" location="bundlers/launch4j"/>
+        <taskdef name="launch4j"
+                 classname="net.sf.launch4j.ant.Launch4jTask"
+                 classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar"/>
+        <launch4j configFile="bundlers/launch4j.xml" outfile="Test.exe"/>
+        
+    </target>
+</project>
