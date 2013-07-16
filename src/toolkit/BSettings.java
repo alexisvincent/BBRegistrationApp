@@ -14,6 +14,7 @@ public class BSettings {
 
     public static boolean STATE_lockScreen_isAnimating;
     public static boolean STATE_lockScreen_isConnecting;
+    public static boolean STATE_lockScreen_loginSuccess;
     public static Color COLOR_lockScreen_passwordField;
     public static boolean STATE_requestScreen_isAnimating;
     public static boolean STATE_queryScreen_isAnimating;

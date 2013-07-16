@@ -4,18 +4,29 @@ import components.BMenuBar;
 import gui.MainFrame;
 import gui.SplashScreen;
 import javax.swing.JFrame;
+import networking.ElectionProfile;
+import networking.NetworkingClient;
+import networking.Server;
 
 /**
  *
  * @author alexisvincent
  */
 public class Main {
+    
+    private static Main INSTANCE;
 
     private static MainFrame mainFrame;
     private static SplashScreen splash;
+    private static String serverName = "RegistrationServer";
+    
+    //Engines and such nonsense
+    ElectionProfile electionProfile;
+    Server server;
+    NetworkingClient networkingClient;
 
     public static void main(String[] args) {
-        new Main();
+        INSTANCE = new Main();
     }
 
     public Main() {
@@ -27,6 +38,9 @@ public class Main {
         //splashScreen
         splash = new SplashScreen();
         splash.setVisible(true);
+        
+        //StartEngines etc...
+        setElectionProfile(new ElectionProfile());
 
         //init mainFrame
         mainFrame = new MainFrame();
@@ -39,4 +53,27 @@ public class Main {
     public static JFrame getMainFrame() {
         return mainFrame;
     }
+
+    public ElectionProfile getElectionProfile() {
+        return electionProfile;
+    }
+
+    public void setElectionProfile(ElectionProfile electionProfile) {
+        this.electionProfile = electionProfile;
+        this.server = electionProfile.getServer(serverName);
+        this.networkingClient = new NetworkingClient(server);
+    }
+
+    public Server getServer() {
+        return server;
+    }
+
+    public NetworkingClient getNetworkingClient() {
+        return networkingClient;
+    }
+
+    public static Main getINSTANCE() {
+        return INSTANCE;
+    }
+    
 }

@@ -25,6 +25,11 @@ import java.awt.event.MouseEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
+import networking.ASocket;
+import networking.Request;
+import networking.Responce;
+import org.jdom2.Document;
+import org.jdom2.Element;
 import toolkit.BSettings;
 import toolkit.BToolkit;
 
@@ -125,15 +130,37 @@ class LockScreenPanel extends JComponent {
                     Thread t1 = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            try {
-                                Thread.sleep(1000);
-                                BSettings.STATE_lockScreen_isConnecting = false;
-                                passwordGOV = null;
-                                passwordUN = null;
 
+                            try {
+                                Thread.sleep(1200);
                             } catch (InterruptedException ex) {
                                 Logger.getLogger(LockScreenPanel.class.getName()).log(Level.SEVERE, null, ex);
                             }
+
+                            ASocket socket = main.Main.getINSTANCE().getNetworkingClient().getSocket();
+                            Element rootElement = new Element("Request");
+                            rootElement.setAttribute("RequestType", "Login");
+                            rootElement.setAttribute("From", "RegistrationApp");
+                            rootElement.setAttribute("UNPassword", passwordUN);
+                            rootElement.setAttribute("GOVPassword", passwordGOV);
+
+                            passwordGOV = null;
+                            passwordUN = null;
+
+                            Request request = new Request(new Document(rootElement), socket);
+                            Responce responce = request.getSocket().postRequest(request);
+
+                            if (responce.getResponceCode() == null) {
+                                BSettings.STATE_lockScreen_loginSuccess = false;
+                            } else if (responce.getResponceCode().equals("200")) {
+                                BSettings.STATE_lockScreen_loginSuccess = true;
+                            } else {
+                                BSettings.STATE_lockScreen_loginSuccess = false;
+                            }
+
+                            BSettings.STATE_lockScreen_isConnecting = false;
+
+
                         }
                     });
                     t1.start();
@@ -380,15 +407,24 @@ class LockScreenPanel extends JComponent {
                                     .getName()).log(Level.SEVERE, null, ex);
                         }
                         BSettings.STATE_lockScreen_isAnimating = false;
-                        animate("queryScreen");
+                        if (BSettings.STATE_lockScreen_loginSuccess) {
+                            animate("queryScreen");
+                        } else {
+                            animate("unlock");
+                        }
+
+                        BSettings.STATE_lockScreen_loginSuccess = false;
+
                     }
                 });
 
                 Thread dots = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        String text = ".";
+                        String text = "";
                         while (BSettings.STATE_lockScreen_isConnecting) {
+                            text = ".";
+                            passwordField.setText(text);
                             while (!BToolkit.getPass(passwordField.getPassword()).equals("......................")) {
                                 passwordField.setText(text);
                                 text += ".";
@@ -397,9 +433,11 @@ class LockScreenPanel extends JComponent {
                                 } catch (InterruptedException ex) {
                                     Logger.getLogger(LockScreenPanel.class.getName()).log(Level.SEVERE, null, ex);
                                 }
+                                if (!BSettings.STATE_lockScreen_isConnecting) {
+                                    passwordField.setText("");
+                                    break;
+                                }
                             }
-                            text = ".";
-                            passwordField.setText(text);;
                         }
                     }
                 });
