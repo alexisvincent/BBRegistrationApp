@@ -27,6 +27,11 @@ import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.text.MaskFormatter;
+import networking.ASocket;
+import networking.Request;
+import networking.Responce;
+import org.jdom2.Document;
+import org.jdom2.Element;
 import toolkit.BSettings;
 import toolkit.BToolkit;
 
@@ -138,6 +143,26 @@ class QueryScreenPanel extends JComponent {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER && !idTextField.equals("") && !nameTextField.equals("")) {
                     idNumber = idTextField.getText();
                     name = nameTextField.getText();
+                    
+                    Element rootElement = new Element("Request");
+                    rootElement.setAttribute("idNumber", idNumber);
+                    rootElement.setAttribute("firstName", name);
+                    rootElement.setAttribute("RequestType", "VotersKey");
+                    rootElement.setAttribute("From", "RegistrationApp");
+                    Document document = new Document(rootElement);
+                    
+                    ASocket socket = main.Main.getINSTANCE().getNetworkingClient().getSocket();
+                    Request request = new Request(document, socket);
+                    Responce responce = socket.postRequest(request);
+                    
+                    if (responce.getResponceCode().equals("200")) {
+                        rootElement = responce.getRootElement();
+                        String votersKey = rootElement.getAttributeValue("VotersKey");
+                        MainFrame.getResultsScreen().setVotersKey(votersKey);
+                    } else {
+                        MainFrame.getResultsScreen().setVotersKey("You entered invalid voter details\nPlease try again.");
+                    }
+                    
                     animate("resultsScreen");
                 } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     System.out.println("Please make sure that you have entered in valid information");

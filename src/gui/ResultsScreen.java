@@ -46,7 +46,7 @@ public class ResultsScreen extends BPanel {
         resultsScreenFooter = new ResultsScreenFooter();
         logoPanel = new JComponent() {
             Image logo = BToolkit.getImage("logo");
-            Point pt = new Point(270, 20);;
+            Point pt = new Point(270, 20);
             @Override
             public void paint(Graphics g) {
                 Graphics2D g2d = (Graphics2D) g;
@@ -103,6 +103,10 @@ public class ResultsScreen extends BPanel {
     public ResultsScreenFooter getResultsScreenFooter() {
         return resultsScreenFooter;
     }
+    
+    public void setVotersKey(String votersKey) {
+        getResultsScreenPanel().setVotersKey(votersKey);
+    }
 }
 
 class ResultsScreenPanel extends JComponent {
@@ -126,7 +130,7 @@ class ResultsScreenPanel extends JComponent {
         finished = new BButton("Finished");
         showQR = new BButton("Show QR");
         print = new BButton("Print");
-        votersKey = "3sgdf8734yiuhiuhysdf9843y093\n09qwepoijw5fkj35";
+        votersKey = "";
 
         finished.setFont(BSettings.getFont("button"));
         showQR.setFont(BSettings.getFont("button"));
@@ -191,6 +195,10 @@ class ResultsScreenPanel extends JComponent {
         this.add(print, gc);
 
     }
+    
+    public void setVotersKey(String votersKey) {
+        this.votersKey = votersKey;
+    }
 
     public void animate(String action) {
         switch (action) {
@@ -203,7 +211,8 @@ class ResultsScreenPanel extends JComponent {
                 break;
             case "fadeIn":
                 BSettings.STATE_queryScreen_isAnimating = true;
-
+                votersKeyTextPane.setText(votersKey);
+                
                 Thread fadeIn = new Thread(new Runnable() {
                     @Override
                     public void run() {

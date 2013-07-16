@@ -21,6 +21,7 @@ public class Main {
     private static String serverName = "RegistrationServer";
     
     //Engines and such nonsense
+    //SettingsEngine settingsEngine;
     ElectionProfile electionProfile;
     Server server;
     NetworkingClient networkingClient;
@@ -40,6 +41,7 @@ public class Main {
         splash.setVisible(true);
         
         //StartEngines etc...
+        //settingsEngine = new SettingsEngine();
         setElectionProfile(new ElectionProfile());
 
         //init mainFrame
