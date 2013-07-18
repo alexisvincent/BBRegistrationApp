@@ -131,36 +131,39 @@ class LockScreenPanel extends JComponent {
                         @Override
                         public void run() {
 
-                            try {
-                                Thread.sleep(1200);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(LockScreenPanel.class.getName()).log(Level.SEVERE, null, ex);
-                            }
+//                            try {
+//                                Thread.sleep(1200);
+//                            } catch (InterruptedException ex) {
+//                                Logger.getLogger(LockScreenPanel.class.getName()).log(Level.SEVERE, null, ex);
+//                            }
 
                             ASocket socket = main.Main.getINSTANCE().getNetworkingClient().getSocket();
-                            Element rootElement = new Element("Request");
-                            rootElement.setAttribute("RequestType", "Login");
-                            rootElement.setAttribute("From", "RegistrationApp");
-                            rootElement.setAttribute("UNPassword", passwordUN);
-                            rootElement.setAttribute("GOVPassword", passwordGOV);
 
-                            passwordGOV = null;
-                            passwordUN = null;
+                            if (socket != null) {
+                                Element rootElement = new Element("Request");
+                                rootElement.setAttribute("RequestType", "Login");
+                                rootElement.setAttribute("From", "RegistrationApp");
+                                rootElement.setAttribute("UNPassword", passwordUN);
+                                rootElement.setAttribute("GOVPassword", passwordGOV);
 
-                            Request request = new Request(new Document(rootElement), socket);
-                            Responce responce = request.getSocket().postRequest(request);
+                                Request request = new Request(new Document(rootElement), socket);
+                                Responce responce = request.getSocket().postRequest(request);
 
-                            if (responce.getResponceCode() == null) {
-                                BSettings.STATE_lockScreen_loginSuccess = false;
-                            } else if (responce.getResponceCode().equals("200")) {
-                                BSettings.STATE_lockScreen_loginSuccess = true;
+                                if (responce == null || responce.getResponceCode() == null) {
+                                    BSettings.STATE_lockScreen_loginSuccess = false;
+                                } else if (responce.getResponceCode().equals("200")) {
+                                    BSettings.STATE_lockScreen_loginSuccess = true;
+                                } else {
+                                    BSettings.STATE_lockScreen_loginSuccess = false;
+                                }
                             } else {
+                                System.out.println("Failed");
                                 BSettings.STATE_lockScreen_loginSuccess = false;
                             }
-
+                            
                             BSettings.STATE_lockScreen_isConnecting = false;
-
-
+                            passwordGOV = null;
+                            passwordUN = null;
                         }
                     });
                     t1.start();

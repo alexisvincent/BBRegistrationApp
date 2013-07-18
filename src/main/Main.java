@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import networking.ElectionProfile;
 import networking.NetworkingClient;
 import networking.Server;
+import settingsEngine.SettingsEngine;
 
 /**
  *
@@ -21,7 +22,7 @@ public class Main {
     private static String serverName = "RegistrationServer";
     
     //Engines and such nonsense
-    //SettingsEngine settingsEngine;
+    SettingsEngine settingsEngine;
     ElectionProfile electionProfile;
     Server server;
     NetworkingClient networkingClient;
@@ -41,15 +42,14 @@ public class Main {
         splash.setVisible(true);
         
         //StartEngines etc...
-        //settingsEngine = new SettingsEngine();
-        setElectionProfile(new ElectionProfile());
+        settingsEngine = new SettingsEngine();
+        setElectionProfile(new ElectionProfile(settingsEngine.getRegistrationServer()));
 
         //init mainFrame
         mainFrame = new MainFrame();
         BMenuBar.setMainFrame(mainFrame);
         mainFrame.setVisible(true);
         splash.setVisible(false);
-
     }
 
     public static JFrame getMainFrame() {
