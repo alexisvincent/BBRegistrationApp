@@ -19,7 +19,6 @@ public class Main {
 
     private static MainFrame mainFrame;
     private static SplashScreen splash;
-    private static String serverName = "RegistrationServer";
     
     //Engines and such nonsense
     SettingsEngine settingsEngine;
@@ -43,7 +42,7 @@ public class Main {
         
         //StartEngines etc...
         settingsEngine = new SettingsEngine();
-        setElectionProfile(new ElectionProfile(settingsEngine.getRegistrationServer()));
+        setElectionProfile(new ElectionProfile(settingsEngine.getServer()));
 
         //init mainFrame
         mainFrame = new MainFrame();
@@ -62,7 +61,7 @@ public class Main {
 
     public void setElectionProfile(ElectionProfile electionProfile) {
         this.electionProfile = electionProfile;
-        this.server = electionProfile.getServer(serverName);
+        this.server = electionProfile.getServer();
         this.networkingClient = new NetworkingClient(server);
     }
 
