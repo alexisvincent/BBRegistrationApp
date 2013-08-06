@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 import networking.ElectionProfile;
 import networking.NetworkingClient;
 import networking.Server;
-import settingsEngine.SettingsEngine;
+import settingsEngine.ProfileEngine;
 
 /**
  *
@@ -21,7 +21,7 @@ public class Main {
     private static SplashScreen splash;
     
     //Engines and such nonsense
-    SettingsEngine settingsEngine;
+    ProfileEngine profileEngine;
     ElectionProfile electionProfile;
     Server server;
     NetworkingClient networkingClient;
@@ -41,8 +41,8 @@ public class Main {
         splash.setVisible(true);
         
         //StartEngines etc...
-        settingsEngine = new SettingsEngine();
-        setElectionProfile(new ElectionProfile(settingsEngine.getServer()));
+        profileEngine = new ProfileEngine();
+        setElectionProfile(profileEngine.getFirstProfile());
 
         //init mainFrame
         mainFrame = new MainFrame();
