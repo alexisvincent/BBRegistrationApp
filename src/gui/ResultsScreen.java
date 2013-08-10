@@ -26,6 +26,7 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.StyleConstants;
 import toolkit.BSettings;
 import toolkit.BToolkit;
+import toolkit.UIToolkit;
 
 /**
  *
@@ -241,7 +242,7 @@ class ResultsScreenPanel extends JComponent {
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setComposite(BToolkit.makeComposite(panelOpacity));
+        g2d.setComposite(UIToolkit.makeComposite(panelOpacity));
     }
 }
 

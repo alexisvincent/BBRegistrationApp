@@ -34,6 +34,7 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import toolkit.BSettings;
 import toolkit.BToolkit;
+import toolkit.UIToolkit;
 
 /**
  * @about Da place you puta da money... I mean ID...
@@ -262,7 +263,7 @@ class QueryScreenPanel extends JComponent {
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setComposite(BToolkit.makeComposite(panelOpacity));
+        g2d.setComposite(UIToolkit.makeComposite(panelOpacity));
     }
 }
 

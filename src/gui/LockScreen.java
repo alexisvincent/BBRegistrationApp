@@ -32,6 +32,7 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import toolkit.BSettings;
 import toolkit.BToolkit;
+import toolkit.UIToolkit;
 
 /**
  * LockScreen
@@ -111,7 +112,7 @@ class LockScreenPanel extends JComponent {
             @Override
             public void paint(Graphics g) {
                 Graphics2D g2d = (Graphics2D) g;
-                g2d.setComposite(BToolkit.makeComposite(textFieldOpacity));
+                g2d.setComposite(UIToolkit.makeComposite(textFieldOpacity));
                 super.paint(g2d);
             }
         };
@@ -175,7 +176,7 @@ class LockScreenPanel extends JComponent {
             @Override
             public void paint(Graphics g) {
                 Graphics2D g2d = (Graphics2D) g;
-                g2d.setComposite(BToolkit.makeComposite(textFieldOpacity));
+                g2d.setComposite(UIToolkit.makeComposite(textFieldOpacity));
                 super.paint(g2d);
             }
         };
@@ -487,7 +488,7 @@ class LockScreenPanel extends JComponent {
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setComposite(BToolkit.makeComposite(logoOpacity));
+        g2d.setComposite(UIToolkit.makeComposite(logoOpacity));
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
