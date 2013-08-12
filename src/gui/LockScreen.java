@@ -92,8 +92,8 @@ class LockScreenPanel extends JComponent {
     private static int textFieldOpacity;
     private static int logoOpacity;
     private GridBagConstraints gc;
-    private String passwordGOV;
-    private String passwordUN;
+    private String password;
+    private String secondaryPassword;
 
     static {
         LOCKED_POSITION = new Point(129, 75);
@@ -123,20 +123,14 @@ class LockScreenPanel extends JComponent {
         passwordField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER && passwordGOV == null && passwordField.isEditable()) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER && password == null && passwordField.isEditable()) {
                     animate("rollText");
-                } else if (e.getKeyCode() == KeyEvent.VK_ENTER && !(passwordGOV == null) && passwordUN == null && passwordField.isEditable()) {
+                } else if (e.getKeyCode() == KeyEvent.VK_ENTER && !(password == null) && secondaryPassword == null && passwordField.isEditable()) {
                     animate("connection");
                     //init FAKE Connection
                     Thread t1 = new Thread(new Runnable() {
                         @Override
                         public void run() {
-
-//                            try {
-//                                Thread.sleep(1200);
-//                            } catch (InterruptedException ex) {
-//                                Logger.getLogger(LockScreenPanel.class.getName()).log(Level.SEVERE, null, ex);
-//                            }
 
                             ASocket socket = main.Main.getINSTANCE().getNetworkingClient().getSocket();
 
@@ -144,8 +138,7 @@ class LockScreenPanel extends JComponent {
                                 Element rootElement = new Element("Request");
                                 rootElement.setAttribute("RequestType", "Login");
                                 rootElement.setAttribute("From", "RegistrationApp");
-                                rootElement.setAttribute("UNPassword", passwordUN);
-                                rootElement.setAttribute("GOVPassword", passwordGOV);
+                                rootElement.setAttribute("Password", password);
 
                                 Request request = new Request(new Document(rootElement), socket);
                                 Responce responce = request.getSocket().postRequest(request);
@@ -163,8 +156,8 @@ class LockScreenPanel extends JComponent {
                             }
                             
                             BSettings.STATE_lockScreen_isConnecting = false;
-                            passwordGOV = null;
-                            passwordUN = null;
+                            password = null;
+                            secondaryPassword = null;
                         }
                     });
                     t1.start();
@@ -172,7 +165,7 @@ class LockScreenPanel extends JComponent {
             }
         });
 
-        passwordLabel = new BRollingLabel("Governmental Password", "UnitedNations Password") {
+        passwordLabel = new BRollingLabel("Enter your Password", "Click Enter again :)") {
             @Override
             public void paint(Graphics g) {
                 Graphics2D g2d = (Graphics2D) g;
@@ -222,8 +215,8 @@ class LockScreenPanel extends JComponent {
                 passwordField.setText("");
                 passwordField.requestFocus();
                 passwordLabel.reset();
-                passwordGOV = null;
-                passwordUN = null;
+                password = null;
+                secondaryPassword = null;
 
                 Thread unlockThread;
                 unlockThread = new Thread(new Runnable() {
@@ -326,7 +319,7 @@ class LockScreenPanel extends JComponent {
                 break;
 
             case "rollText":
-                passwordGOV = BToolkit.getPass(passwordField.getPassword());
+                password = BToolkit.getPass(passwordField.getPassword());
                 passwordField.setText("");
                 passwordLabel.roll();
                 break;
@@ -379,7 +372,7 @@ class LockScreenPanel extends JComponent {
                 BSettings.STATE_lockScreen_isAnimating = true;
                 passwordField.setEditable(false);
                 passwordField.getCaret().setVisible(false);
-                passwordUN = BToolkit.getPass(passwordField.getPassword());
+                secondaryPassword = BToolkit.getPass(passwordField.getPassword());
                 BSettings.COLOR_lockScreen_passwordField = new Color(20, 200, 112, 255);
                 passwordField.setForeground(BSettings.COLOR_lockScreen_passwordField);
 
